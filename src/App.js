@@ -12,6 +12,13 @@ app.use(cors())
 app.use('/assets/uploads/img', express.static('assets/picture/uploads/img'))
 
 
+//route
+const authRoute = require('./routes/auth')
+
+
+//middleware
+app.use('/auth',authRoute)
+
 // Error handler http request
 app.use(async (req, res, next) => {
     next(new Error('Not Found'))
