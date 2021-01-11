@@ -10,6 +10,7 @@ module.exports = {
         email:Joi.string()
         .email()
         .required(),
+        avatar:Joi.string()
         
     })
 }

@@ -9,7 +9,7 @@ const { APP_PORT } = process.env
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 app.use(cors())
-app.use('/assets/uploads/img', express.static('assets/picture/uploads/img'))
+app.use('/assets/uploads/img', express.static('assets/uploads/img'))
 
 
 //route
