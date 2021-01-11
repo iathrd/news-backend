@@ -2,6 +2,7 @@ const { response } = require("../helpers/response");
 const validation = require("../helpers/validations");
 const { User } = require("../models");
 const argon = require("argon2");
+const { where } = require("sequelize");
 
 module.exports = {
   register: async (req, res) => {
@@ -35,5 +36,21 @@ module.exports = {
     } catch (err) {
       err.isJoi && response(res, err.message, {}, false, 400);
     }
+  },
+  login: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await User.findOne({ where: { email } });
+      if (user) {
+        const verifyPassword = await argon.verify(user.password, password);
+        if (verifyPassword) {
+          response(res, "Login succesfuly");
+        } else {
+          response(res, "Invalid email or password", {}, false, 400);
+        }
+      } else {
+        response(res, "Invalid email or passaword", {}, false, 400);
+      }
+    } catch (err) {}
   },
 };
