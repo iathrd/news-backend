@@ -44,10 +44,19 @@ module.exports = {
           image: path,
         };
       }
+      const newsContent = req.body.content
+        .replace(/\./g, "")
+        .replace(/\n/g, "")
+        .split(" ")
+        .join(" ");
+      const readingTime = Math.ceil(newsContent.length / 250);
       const data = await validation.editNewsSchema.validateAsync(req.body);
       const find = await News.findOne({ where: { id } });
       if (find && find.userId === +userId) {
-        const updateNews = await News.update(data, { where: { id } });
+        const updateNews = await News.update(
+          { ...data, readingTime },
+          { where: { id } }
+        );
         if (updateNews) {
           response(res, "News updated", {
             data: { ...find.dataValues, ...data },
