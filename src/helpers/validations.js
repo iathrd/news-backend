@@ -23,8 +23,8 @@ module.exports = {
         .min(5)
         .required(),
         content:Joi.string()
-        .min()
+        .trim()
         .required()
-        
+
     })
 }

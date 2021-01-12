@@ -20,6 +20,9 @@ module.exports = {
       content: {
         type: Sequelize.TEXT
       },
+      readingTime: {
+        type: Sequelize.INTEGER
+      },
       userId: {
         type: Sequelize.INTEGER
       },

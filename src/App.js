@@ -4,7 +4,10 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const app = express();
+
+//helpers
 const { APP_PORT } = process.env;
+const { verifyAccessToken } = require("./helpers/jwt");
 
 //middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,7 +21,7 @@ const newsRoute = require("./routes/news");
 
 //middleware
 app.use("/auth", authRoute);
-app.use("/news", newsRoute);
+app.use("/news",verifyAccessToken, newsRoute);
 
 // Error handler http request
 app.use(async (req, res, next) => {
