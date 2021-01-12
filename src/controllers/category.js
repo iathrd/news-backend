@@ -1,6 +1,8 @@
 const { response } = require("../helpers/response");
 const validation = require("../helpers/validations");
 const { Category } = require("../models");
+const { Op } = require("sequelize");
+const { pagination } = require("../helpers/pagination");
 
 module.exports = {
   createCategory: async (req, res) => {
@@ -43,6 +45,42 @@ module.exports = {
       err.isJoi
         ? response(res, err.message, {}, false, 400)
         : response(res, "Internal server error", {}, false, 500);
+    }
+  },
+  listCategory: async (req, res) => {
+    const {
+      limit = 10,
+      page = 1,
+      search = "",
+      sort = "name",
+      to = "ASC",
+    } = req.query;
+    const offset = (page - 1) * limit;
+    try {
+      const { count, rows } = await Category.findAndCountAll({
+        where: {
+          name: {
+            [Op.like]: `%${search}%`,
+          },
+        },
+        order: [[sort, to]],
+        limit: +limit,
+        offset: +offset,
+      });
+      if (rows) {
+        const pageInfo = pagination(
+          "/category/listCategory",
+          req.query,
+          page,
+          limit,
+          count
+        );
+        response(res, "List Category", { data: rows, pageInfo });
+      } else {
+        response(res, "Data not found", { data: [] });
+      }
+    } catch (err) {
+      response(res, "Internal server error", {}, false, 500);
     }
   },
 };
