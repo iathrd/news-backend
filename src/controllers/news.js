@@ -49,7 +49,9 @@ module.exports = {
       if (find && find.userId === +userId) {
         const updateNews = await News.update(data, { where: { id } });
         if (updateNews) {
-          response(res, "News updated", { data: { id, ...req.body, userId } });
+          response(res, "News updated", {
+            data: { ...find.dataValues, ...data },
+          });
         } else {
           response(res, "Internal server error", {}, false, 500);
         }
