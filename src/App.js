@@ -6,6 +6,7 @@ const cors = require("cors");
 const app = express();
 const { APP_PORT } = process.env;
 
+//middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(cors());
