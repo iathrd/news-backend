@@ -34,7 +34,9 @@ module.exports = {
         response(res, "Email alreade taken!", {}, false, 400);
       }
     } catch (err) {
-      err.isJoi && response(res, err.message, {}, false, 400);
+      err.isJoi
+        ? response(res, err.message, {}, false, 400)
+        : response(res, "Internal server error", {}, false, 500);
     }
   },
   login: async (req, res) => {
@@ -52,6 +54,8 @@ module.exports = {
       } else {
         response(res, "Invalid email or passaword", {}, false, 400);
       }
-    } catch (err) {}
+    } catch (err) {
+      response(res, "Internal server error", {}, false, 500);
+    }
   },
 };
