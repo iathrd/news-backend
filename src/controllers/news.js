@@ -72,8 +72,25 @@ module.exports = {
         }
       }
     } catch (err) {
-      err.isJoi && response(res, err.message, {}, false, 400);
-      console.log(err);
+      err.isJoi
+        ? response(res, err.message, {}, false, 400)
+        : response(res, "Internal server error", {}, false, 500);
+    }
+  },
+  getNew: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { userId } = req.payload;
+      const find = await News.findOne({ where: { id } });
+      if (find && find.userId === userId) {
+        response(res, "News detail", { data: find.dataValues });
+      } else {
+        !find
+          ? response(res, `News with id ${id} doesn't exist`, {}, false, 400)
+          : response(res, "Unautorization", {}, false, 401);
+      }
+    } catch (err) {
+      response(res, "Internal server error", {}, false, 500);
     }
   },
 };
