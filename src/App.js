@@ -18,10 +18,12 @@ app.use("/assets/uploads/img", express.static("assets/uploads/img"));
 //route
 const authRoute = require("./routes/auth");
 const newsRoute = require("./routes/news");
+const categoryRoute = require("./routes/category");
 
 //middleware
 app.use("/auth", authRoute);
-app.use("/news",verifyAccessToken, newsRoute);
+app.use("/news", verifyAccessToken, newsRoute);
+app.use("/category", categoryRoute);
 
 // Error handler http request
 app.use(async (req, res, next) => {
