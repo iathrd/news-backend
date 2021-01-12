@@ -105,7 +105,6 @@ module.exports = {
         to = "ASC",
       } = req.query;
       const offset = (page - 1) * limit;
-      console.log(search);
       const { count, rows } = await News.findAndCountAll({
         where: {
           [Op.or]: [
@@ -134,6 +133,53 @@ module.exports = {
           count
         );
         response(res, "News list", { data: rows, pageInfo });
+      } else {
+        response(res, "Not found", []);
+      }
+    } catch (err) {
+      response(res, "Internal server error", {}, false, 500);
+    }
+  },
+  myNews: async (req, res) => {
+    try {
+      const { userId } = req.payload;
+      const {
+        limit = 10,
+        page = 1,
+        search = "",
+        sort = "createdAt",
+        to = "ASC",
+      } = req.query;
+      const offset = (page - 1) * limit;
+      const { count, rows } = await News.findAndCountAll({
+        where: {
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              content: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ],
+          userId: userId,
+        },
+        order: [[sort, to]],
+        limit: +limit,
+        offset: +offset,
+      });
+      if (rows) {
+        const pageInfo = pagination(
+          "/news/myNews",
+          req.query,
+          page,
+          limit,
+          count
+        );
+        response(res, "My News list", { data: rows, pageInfo });
       } else {
         response(res, "Not found", []);
       }
