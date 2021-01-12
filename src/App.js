@@ -23,7 +23,7 @@ const categoryRoute = require("./routes/category");
 //middleware
 app.use("/auth", authRoute);
 app.use("/news", verifyAccessToken, newsRoute);
-app.use("/category", categoryRoute);
+app.use("/category", verifyAccessToken, categoryRoute);
 
 // Error handler http request
 app.use(async (req, res, next) => {
