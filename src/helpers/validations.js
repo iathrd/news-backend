@@ -25,6 +25,15 @@ module.exports = {
         content:Joi.string()
         .trim()
         .required()
-
+    }),
+    editNewsSchema:Joi.object({
+        title:Joi.string()
+        .min(5)
+        .trim(),
+        image:Joi.string(),
+        imageDescription:Joi.string()
+        .min(5),
+        content:Joi.string()
+        .trim()
     })
 }
