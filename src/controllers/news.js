@@ -1,6 +1,6 @@
 const { response } = require("../helpers/response");
 const validation = require("../helpers/validations");
-const { News } = require("../models");
+const { News, User } = require("../models");
 const { Op } = require("sequelize");
 const { pagination } = require("../helpers/pagination");
 
@@ -83,7 +83,10 @@ module.exports = {
     try {
       const { id } = req.params;
       const { userId } = req.payload;
-      const find = await News.findOne({ where: { id } });
+      const find = await News.findOne({
+        include: [{ model: User, as: "creator" }],
+        where: { id },
+      });
       if (find && find.userId === userId) {
         response(res, "News detail", { data: find.dataValues });
       } else {
@@ -106,6 +109,7 @@ module.exports = {
       } = req.query;
       const offset = (page - 1) * limit;
       const { count, rows } = await News.findAndCountAll({
+        include: [{ model: User, as: "creator" }],
         where: {
           [Op.or]: [
             {
@@ -152,6 +156,7 @@ module.exports = {
       } = req.query;
       const offset = (page - 1) * limit;
       const { count, rows } = await News.findAndCountAll({
+        include: [{ model: User, as: "creator" }],
         where: {
           [Op.or]: [
             {
