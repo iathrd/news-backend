@@ -2,7 +2,7 @@ const { response } = require("../helpers/response");
 const validation = require("../helpers/validations");
 const { User } = require("../models");
 const argon = require("argon2");
-const { where } = require("sequelize");
+const { signAccesToken } = require("../helpers/jwt");
 
 module.exports = {
   register: async (req, res) => {
@@ -44,7 +44,8 @@ module.exports = {
       if (user) {
         const verifyPassword = await argon.verify(user.password, password);
         if (verifyPassword) {
-          response(res, "Login succesfuly");
+          const token = await signAccesToken(user.id);
+          response(res, "Login succesfuly", { token });
         } else {
           response(res, "Invalid email or password", {}, false, 400);
         }
