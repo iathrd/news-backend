@@ -1,6 +1,8 @@
 const { response } = require("../helpers/response");
 const validation = require("../helpers/validations");
 const { News } = require("../models");
+const { Op } = require("sequelize");
+const { pagination } = require("../helpers/pagination");
 
 module.exports = {
   createNews: async (req, res) => {
@@ -88,6 +90,52 @@ module.exports = {
         !find
           ? response(res, `News with id ${id} doesn't exist`, {}, false, 400)
           : response(res, "Unautorization", {}, false, 401);
+      }
+    } catch (err) {
+      response(res, "Internal server error", {}, false, 500);
+    }
+  },
+  getNews: async (req, res) => {
+    try {
+      const {
+        limit = 10,
+        page = 1,
+        search = "",
+        sort = "createdAt",
+        to = "ASC",
+      } = req.query;
+      const offset = (page - 1) * limit;
+      console.log(search);
+      const { count, rows } = await News.findAndCountAll({
+        where: {
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              content: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ],
+        },
+        order: [[sort, to]],
+        limit: +limit,
+        offset: +offset,
+      });
+      if (rows) {
+        const pageInfo = pagination(
+          "/news/news",
+          req.query,
+          page,
+          limit,
+          count
+        );
+        response(res, "News list", { data: rows, pageInfo });
+      } else {
+        response(res, "Not found", []);
       }
     } catch (err) {
       response(res, "Internal server error", {}, false, 500);
