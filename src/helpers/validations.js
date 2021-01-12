@@ -35,5 +35,15 @@ module.exports = {
         .min(5),
         content:Joi.string()
         .trim()
+    }),
+    createCategorySchema:Joi.object({
+        name:Joi.string()
+        .trim()
+        .min(4)
+        .required(),
+        description:Joi.string()
+        .trim()
+        .min(5)
+        .required(),
     })
 }
