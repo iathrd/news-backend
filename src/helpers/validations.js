@@ -34,7 +34,8 @@ module.exports = {
         imageDescription:Joi.string()
         .min(5),
         content:Joi.string()
-        .trim()
+        .trim(),
+        readingTime:Joi.number()
     }),
     createCategorySchema:Joi.object({
         name:Joi.string()

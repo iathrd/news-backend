@@ -48,19 +48,24 @@ module.exports = {
           image: path,
         };
       }
-      const newsContent = req.body.content
-        .replace(/\./g, "")
-        .replace(/\n/g, "")
-        .split(" ")
-        .join(" ");
-      const readingTime = Math.ceil(newsContent.length / 250);
+      if (req.file === undefined) {
+        const newsContent = req.body.content
+          .replace(/\./g, "")
+          .replace(/\n/g, "")
+          .split(" ")
+          .join(" ");
+        const readingTime = Math.ceil(newsContent.length / 250);
+        req.body = {
+          ...req.body,
+          readingTime,
+        };
+      }
+
       const data = await validation.editNewsSchema.validateAsync(req.body);
       const find = await News.findOne({ where: { id } });
       if (find && find.userId === +userId) {
-        const updateNews = await News.update(
-          { ...data, readingTime },
-          { where: { id } }
-        );
+        const updateNews = await News.update(data, { where: { id } });
+        console.log(updateNews);
         if (updateNews) {
           response(res, "News updated", {
             data: { ...find.dataValues, ...data },
@@ -76,6 +81,7 @@ module.exports = {
         }
       }
     } catch (err) {
+      console.log(err);
       err.isJoi
         ? response(res, err.message, {}, false, 400)
         : response(res, "Internal server error", {}, false, 500);
