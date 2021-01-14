@@ -58,4 +58,53 @@ module.exports = {
       response(res, "Internal server error", {}, false, 500);
     }
   },
+  getUser: async (req, res) => {
+    try {
+      const { userId } = req.payload;
+      const find = await User.findOne({ where: { id: userId } });
+      console.log(find);
+      if (find) {
+        response(res, "user", {
+          data: { ...find.dataValues, password: undefined },
+        });
+      } else {
+        response(res, "Internal server error", {}, false, 500);
+      }
+    } catch (error) {
+      response(res, "Internal server error", {}, false, 400);
+    }
+  },
+  editUser: async (req, res) => {
+    try {
+      const { email } = req.body;
+      console.log(email);
+      const { userId } = req.payload;
+      if (req.file !== undefined) {
+        let { path } = req.file;
+        path = path.replace(/\\/g, "/");
+        req.body = {
+          ...req.body,
+          avatar: path,
+        };
+      }
+      const find = await User.findOne({ where: { email: email } });
+      if (find) {
+        response(res, `Email ${req.body.email} already taken`);
+      } else {
+        const updateData = await User.update(req.body, {
+          where: { id: userId },
+        });
+        if (updateData) {
+          response(res, "Profile succesfuly updated", {
+            data: updateData.dataValues,
+          });
+        } else {
+          response(res, "Intermal server error", {}, false, 500);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      response(res, "Internal server error", {}, false, 500);
+    }
+  },
 };
