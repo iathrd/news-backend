@@ -16,18 +16,17 @@ module.exports = {
           image: path,
         };
       }
-      if (req.file === undefined) {
-        const newsContent = req.body.content
-          .replace(/\./g, "")
-          .replace(/\n/g, "")
-          .split(" ")
-          .join(" ");
-        const readingTime = Math.ceil(newsContent.length / 250);
-        req.body = {
-          ...req.body,
-          readingTime,
-        };
-      }
+
+      const newsContent = req.body.content
+        .replace(/\./g, "")
+        .replace(/\n/g, "")
+        .split(" ")
+        .join(" ");
+      const readingTime = Math.ceil(newsContent.length / 250);
+      req.body = {
+        ...req.body,
+        readingTime,
+      };
       const data = await validation.createNewsSchema.validateAsync(req.body);
 
       const sendData = await News.create({ ...data, userId });
