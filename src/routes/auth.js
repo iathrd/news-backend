@@ -12,5 +12,6 @@ route.post(
   upload.single("avatar"),
   Auth.editUser
 );
+route.post("/changePassword", Auth.changePassword);
 
 module.exports = route;

@@ -116,4 +116,28 @@ module.exports = {
       response(res, "Internal server error", {}, false, 500);
     }
   },
+  changePassword: async () => {
+    try {
+      const data = await validation.changePassword.validateAsync(req.body);
+      const findEmail = await User.findOne({ where: { email: data.email } });
+      if (findEmail) {
+        const hashedPassword = await argon.hash(data.newPassword);
+        const updatePassword = User.update(
+          { password: hashedPassword },
+          { where: { email: data.email } }
+        );
+        if (updatePassword) {
+          response(res, "Password succesfulu changed");
+        } else {
+          response(res, "Faied to change password tyr again", {}, false, 400);
+        }
+      } else {
+        response(res, "Email is not registered", {}, false, 400);
+      }
+    } catch (error) {
+      err.isJoi
+        ? response(res, err.message, {}, false, 400)
+        : response(res, "Internal server error", {}, false, 500);
+    }
+  },
 };

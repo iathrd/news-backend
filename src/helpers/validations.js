@@ -29,4 +29,9 @@ module.exports = {
     name: Joi.string().trim().min(4),
     description: Joi.string().trim().min(5),
   }),
+  changePassword: Joi.object({
+    email: Joi.string().email().required(),
+    newPassword: Joi.string().min(8).required(),
+    repeatPassword: Joi.string().min(8).required(),
+  }),
 };
