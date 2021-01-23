@@ -116,7 +116,7 @@ module.exports = {
       response(res, "Internal server error", {}, false, 500);
     }
   },
-  changePassword: async () => {
+  changePassword: async (req, res) => {
     try {
       const data = await validation.changePassword.validateAsync(req.body);
       const findEmail = await User.findOne({ where: { email: data.email } });
@@ -135,8 +135,8 @@ module.exports = {
         response(res, "Email is not registered", {}, false, 400);
       }
     } catch (error) {
-      err.isJoi
-        ? response(res, err.message, {}, false, 400)
+      error.isJoi
+        ? response(res, error.message, {}, false, 400)
         : response(res, "Internal server error", {}, false, 500);
     }
   },
