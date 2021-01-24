@@ -7,5 +7,6 @@ route.patch("/editNews/:id", upload.single("image"), News.editNews);
 route.get("/new/:id", News.getNew);
 route.get("/news", News.getNews);
 route.get("/myNews", News.myNews);
+route.get("/categoryNews", News.getCategoryNews);
 
 module.exports = route;

@@ -157,6 +157,54 @@ module.exports = {
       response(res, "Internal server error", {}, false, 500);
     }
   },
+  getCategoryNews: async (req, res) => {
+    try {
+      const {
+        limit = 10,
+        page = 1,
+        search = "",
+        sort = "createdAt",
+        to = "DESC",
+        category= 6,
+      } = req.query;
+      const offset = (page - 1) * limit;
+      const { count, rows } = await News.findAndCountAll({
+        include: [{ model: User, as: "creator" }],
+        where: {
+          categoryId:category
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              content: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ],
+        },
+        order: [[sort, to]],
+        limit: +limit,
+        offset: +offset,
+      });
+      if (rows) {
+        const pageInfo = pagination(
+          "/news/news",
+          req.query,
+          page,
+          limit,
+          count
+        );
+        response(res, "News list", { data: rows, pageInfo });
+      } else {
+        response(res, "Not found", []);
+      }
+    } catch (err) {
+      response(res, "Internal server error", {}, false, 500);
+    }
+  },
   myNews: async (req, res) => {
     try {
       const { userId } = req.payload;
