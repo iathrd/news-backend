@@ -165,13 +165,13 @@ module.exports = {
         search = "",
         sort = "createdAt",
         to = "DESC",
-        category= 6,
+        category = 6,
       } = req.query;
       const offset = (page - 1) * limit;
       const { count, rows } = await News.findAndCountAll({
         include: [{ model: User, as: "creator" }],
         where: {
-          categoryId:category
+          categoryId: category,
           [Op.or]: [
             {
               title: {
