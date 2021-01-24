@@ -171,24 +171,13 @@ module.exports = {
       const { count, rows } = await News.findAndCountAll({
         include: [{ model: User, as: "creator" }],
         where: {
-          categoryId: category,
-          [Op.or]: [
-            {
-              title: {
-                [Op.like]: `%${search}%`,
-              },
-            },
-            {
-              content: {
-                [Op.like]: `%${search}%`,
-              },
-            },
-          ],
+          categoryId: +category,
         },
         order: [[sort, to]],
         limit: +limit,
         offset: +offset,
       });
+      console.log(rows);
       if (rows) {
         const pageInfo = pagination(
           "/news/news",
@@ -199,7 +188,7 @@ module.exports = {
         );
         response(res, "News list", { data: rows, pageInfo });
       } else {
-        response(res, "Not found", []);
+        response(res, "PPPPP", []);
       }
     } catch (err) {
       response(res, "Internal server error", {}, false, 500);

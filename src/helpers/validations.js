@@ -13,6 +13,7 @@ module.exports = {
     imageDescription: Joi.string().min(5).required(),
     content: Joi.string().trim().required(),
     readingTime: Joi.number(),
+    categoryId: Joi.number(),
   }),
   editNewsSchema: Joi.object({
     title: Joi.string().min(5).trim(),
